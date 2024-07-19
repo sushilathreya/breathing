@@ -105,9 +105,9 @@
                         instruction.textContent = 'Exhale';
                         break;
                     case 3: // Bottom line from right to left (Hold)
-                        animation.style.width = `${200 - stepProgress * 200}px`;
+                        animation.style.width = `${stepProgress * 200}px`;
                         animation.style.height = '4px';
-                        animation.style.left = '0px';
+                        animation.style.left = `${200 - stepProgress * 200}px`;
                         animation.style.top = '196px';
                         instruction.textContent = 'Hold';
                         break;
