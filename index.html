@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box Breathing Partner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        #box {
+            width: 200px;
+            height: 200px;
+            border: 2px solid #333;
+            margin: 20px auto;
+            position: relative;
+        }
+        #animation {
+            position: absolute;
+            background-color: #4CAF50;
+        }
+        input {
+            width: 50px;
+            margin: 5px;
+        }
+        #instruction {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Box Breathing Partner</h1>
+        <div id="box">
+            <div id="animation"></div>
+        </div>
+        <div>
+            <label for="duration">Duration (seconds):</label>
+            <input type="number" id="duration" value="4" min="1" max="10">
+            <button onclick="updateDuration()">Update</button>
+        </div>
+        <p id="instruction">Inhale</p>
+    </div>
+    <script>
+        let duration = 4;
+        const box = document.getElementById('box');
+        const animation = document.getElementById('animation');
+        const instruction = document.getElementById('instruction');
+        let animationFrame;
+
+        function updateDuration() {
+            duration = parseInt(document.getElementById('duration').value);
+            if (isNaN(duration) || duration < 1) duration = 1;
+            if (duration > 10) duration = 10;
+            document.getElementById('duration').value = duration;
+            cancelAnimationFrame(animationFrame);
+            startAnimation();
+        }
+
+        function startAnimation() {
+            let startTime;
+            const totalSteps = 4;
+
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const elapsedTime = currentTime - startTime;
+                const stepDuration = duration * 1000;
+                const cycleTime = stepDuration * totalSteps;
+                const progress = (elapsedTime % cycleTime) / cycleTime;
+                
+                const step = Math.floor(progress * totalSteps);
+                const stepProgress = (progress * totalSteps) % 1;
+
+                // Animate the lines in the correct order
+                switch(step) {
+                    case 0: // Left side from bottom to top (Inhale)
+                        animation.style.width = '4px';
+                        animation.style.height = `${stepProgress * 200}px`;
+                        animation.style.left = '0px';
+                        animation.style.top = `${200 - stepProgress * 200}px`;
+                        instruction.textContent = 'Inhale';
+                        break;
+                    case 1: // Top line from left to right (Hold)
+                        animation.style.width = `${stepProgress * 200}px`;
+                        animation.style.height = '4px';
+                        animation.style.left = '0px';
+                        animation.style.top = '0px';
+                        instruction.textContent = 'Hold';
+                        break;
+                    case 2: // Right side from top to bottom (Exhale)
+                        animation.style.width = '4px';
+                        animation.style.height = `${stepProgress * 200}px`;
+                        animation.style.left = '196px';
+                        animation.style.top = '0px';
+                        instruction.textContent = 'Exhale';
+                        break;
+                    case 3: // Bottom line from right to left (Hold)
+                        animation.style.width = `${200 - stepProgress * 200}px`;
+                        animation.style.height = '4px';
+                        animation.style.left = '0px';
+                        animation.style.top = '196px';
+                        instruction.textContent = 'Hold';
+                        break;
+                }
+
+                animationFrame = requestAnimationFrame(animate);
+            }
+
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        startAnimation();
+    </script>
+</body>
+</html>
